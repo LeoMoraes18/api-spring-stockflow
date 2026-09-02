@@ -49,10 +49,6 @@ public class Pedido extends AuditoriaBase {
     @Column(name = "valor_total", nullable = false, precision = 15, scale = 2)
     private BigDecimal valorTotal;
 
-    // LADO INVERSO: nao existe coluna "itens" em pedido. O mappedBy aponta
-    // para o CAMPO "pedido" dentro de ItemPedido, que e quem tem a FK.
-    // cascade = ALL       -> salvar/remover o pedido propaga para os itens
-    // orphanRemoval       -> item retirado da lista e DELETADO do banco
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> itens = new ArrayList<>();
 
@@ -69,10 +65,6 @@ public class Pedido extends AuditoriaBase {
         setCreatedAt(Instant.now());
     }
 
-    /**
-     * Unico caminho para incluir item. Mantem os DOIS lados da relacao
-     * sincronizados: sem o item.setPedido(this), a FK iria nula no INSERT.
-     */
     public void adicionarItem(ItemPedido item) {
         itens.add(item);
         item.setPedido(this);
@@ -85,7 +77,6 @@ public class Pedido extends AuditoriaBase {
         recalcularTotal();
     }
 
-    /** O total do pedido e derivado dos itens - um unico lugar calcula. */
     public void recalcularTotal() {
         this.valorTotal = itens.stream()
                 .map(ItemPedido::getValorTotal)
