@@ -1,0 +1,32 @@
+@host = http://localhost:8080
+
+### criar produto
+POST {{host}}/produtos
+Content-Type: application/json
+
+{
+    "nome": "Teclado mecanico ABNT2",
+    "descricao": "Switch marrom, 87 teclas",
+    "unidadeMedida": "UN",
+    "precoVenda": 349.90,
+    "precoCompra": 210.00
+}
+
+### listar paginado
+GET {{host}}/produtos?page=0&size=10&sort=nome,asc
+
+### buscar por id  (troque pelo id devolvido no POST)
+GET {{host}}/produtos/e760ba1e-0ace-4d20-b5e4-f32422193c96
+
+### 404 - id que nao existe
+GET {{host}}/produtos/00000000-0000-0000-0000-000000000000
+
+### 400 - validacao: nome vazio e preco negativo
+POST {{host}}/produtos
+Content-Type: application/json
+
+{
+  "nome": "",
+  "unidadeMedida": "UN",
+  "precoVenda": -5
+}
