@@ -1,0 +1,2 @@
+
+CREATE SEQUENCE pedido_numero_seq START WITH 1 INCREMENT BY 1;

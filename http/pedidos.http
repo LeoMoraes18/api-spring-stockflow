@@ -1,0 +1,37 @@
+@host = http://localhost:8080
+
+### 1. criar produto
+POST {{host}}/produtos
+Content-Type: application/json
+
+{ "nome": "Monitor 27", "unidadeMedida": "UN", "precoVenda": 1200.00 }
+
+### 2. repor 2 unidades   (cole o id do passo 1)
+POST {{host}}/produtos/e6a85534-0a28-4cf3-b156-468b70f9708f/estoque/entradas
+Content-Type: application/json
+
+{ "quantidade": 2, "observacao": "carga inicial" }
+
+### 3. conferir saldo -> deve ser 2
+GET {{host}}/produtos/e6a85534-0a28-4cf3-b156-468b70f9708f/estoque
+
+### 4. pedido de 5 unidades (mais do que existe)
+POST {{host}}/pedidos
+Content-Type: application/json
+
+{
+  "clienteId": "ID-DO-CLIENTE",
+  "itens": [ { "produtoId": "e6a85534-0a28-4cf3-b156-468b70f9708f", "quantidade": 1 } ]
+}
+
+### 5. CONFIRMAR -> 409 com disponivel=2 e solicitado=5
+POST {{host}}/pedidos/ID-DO-PEDIDO/confirmar
+
+### 6. confirmar de novo o mesmo pedido ja confirmado -> 409 de transicao
+POST {{host}}/pedidos/ID-DO-PEDIDO/confirmar
+
+### 7. validacao: pedido sem itens -> 400
+POST {{host}}/pedidos
+Content-Type: application/json
+
+{ "clienteId": "ID-DO-CLIENTE", "itens": [] }
