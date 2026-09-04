@@ -35,6 +35,7 @@ public class Cliente extends AuditoriaBase{
 
         setCreatedAt(Instant.now());
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

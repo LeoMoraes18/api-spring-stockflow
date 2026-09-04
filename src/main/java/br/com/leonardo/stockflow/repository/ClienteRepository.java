@@ -9,4 +9,5 @@ import br.com.leonardo.stockflow.domain.Cliente;
 
 public interface ClienteRepository extends JpaRepository<Cliente, UUID> {
 
+    boolean existsByDocumentoAndDeletedAtIsNull(String documento);
 }

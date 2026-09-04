@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -65,6 +66,31 @@ public class TratadorDeErros {
                 HttpStatus.BAD_REQUEST, "Um ou mais campos são inválidos");
         problema.setTitle("Erro de validação");
         problema.setProperty("erros", erros);
+        return problema;
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ProblemDetail violacaoDeIntegridade(DataIntegrityViolationException e) {
+        ProblemDetail problema = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT,
+                "A operação viola uma restrição de integridade dos dados.");
+        problema.setTitle("Conflito de dados");
+        return problema;
+    }
+
+    @ExceptionHandler(DocumentoJaCadastradoException.class)
+    public ProblemDetail documentoJaCadastrado(DocumentoJaCadastradoException e) {
+        ProblemDetail problema =
+                ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+        problema.setTitle("Documento já cadastrado");
+        problema.setProperty("documento", e.getDocumento());
+        return problema;
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ProblemDetail argumentoInvalido(IllegalArgumentException e) {
+        ProblemDetail problema =
+                ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+        problema.setTitle("Requisição inválida");
         return problema;
     }
 }

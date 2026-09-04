@@ -1,0 +1,34 @@
+@host = http://localhost:8080
+
+### criar cliente
+POST {{host}}/clientes
+Content-Type: application/json
+
+{ "nome": "Acme Comercio Ltda", "documento": "12345678000199" }
+
+### mesmo documento -> 409 com o campo "documento" na resposta
+POST {{host}}/clientes
+Content-Type: application/json
+
+{ "nome": "Outra Empresa", "documento": "12345678000199" }
+
+### cliente sem documento (opcional) -> 201
+POST {{host}}/clientes
+Content-Type: application/json
+
+{ "nome": "Cliente Pessoa Fisica" }
+
+### nome vazio -> 400 com o mapa de erros
+POST {{host}}/clientes
+Content-Type: application/json
+
+{ "nome": "" }
+
+### listar paginado
+GET {{host}}/clientes?page=0&size=10&sort=nome,asc
+
+### buscar por id (cole o id do primeiro POST)
+GET {{host}}/clientes/d0ac1f1d-2a7d-4a94-a142-1c742c63d199
+
+### id inexistente -> 404
+GET {{host}}/clientes/00000000-0000-0000-0000-000000000000
