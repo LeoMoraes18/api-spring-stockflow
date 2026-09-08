@@ -19,7 +19,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 
+import br.com.leonardo.stockflow.TestcontainersConfig;
 import br.com.leonardo.stockflow.domain.Cliente;
 import br.com.leonardo.stockflow.domain.ItemPedido;
 import br.com.leonardo.stockflow.domain.Pedido;
@@ -36,6 +38,8 @@ import br.com.leonardo.stockflow.repository.SaldoEstoqueRepository;
  * para que as outras threads enxerguem os dados - uma transacao de teste
  * ficaria isolada e as threads nao veriam nada. Por isso a limpeza e manual.
  */
+
+@Import(TestcontainersConfig.class)
 @SpringBootTest
 @DisplayName("Baixa de estoque sob concorrencia")
 class ConfirmacaoConcorrenteTest {
